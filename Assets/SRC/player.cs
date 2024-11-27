@@ -21,8 +21,13 @@ public class Player : MonoBehaviour
     [Header("Collision Info")]
     [SerializeField] private float groundCheckDistance;
     [SerializeField] private LayerMask whatIsGround;
+    [SerializeField] private Transform wallCheck;
+    [SerializeField] private Vector2 wallCheckSize;
+
     private bool isGrounded;
     private bool playerUnlocked;
+    private bool wallDetected;
+
 
     // Start is called before the first frame update
     void Start()
@@ -36,12 +41,18 @@ public class Player : MonoBehaviour
     {
         AnimatorControllers();
 
-        if (playerUnlocked) {
-            rb.velocity = new Vector2(moveSpeed, rb.velocity.y);
+        if (playerUnlocked && !wallDetected) {
+            Movement() 
         }
+
+        if (isGrounded) canDoubleJump = true;
         
         CheckCollisions();
         CheckInput();
+    }
+
+    void Movement() {
+        rb.velocity = new Vector2(moveSpeed, rb.velocity.y);
     }
 
     void CheckInput() {
@@ -54,7 +65,6 @@ public class Player : MonoBehaviour
 
     void JumpButton() {
         if (isGrounded) {
-            canDoubleJump = true;
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
         } else if (canDoubleJump) {
             canDoubleJump = false;
@@ -64,6 +74,7 @@ public class Player : MonoBehaviour
 
     void CheckCollisions() {
         isGrounded = Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance, whatIsGround);
+        wallDetected = Physics2D.BoxCast(wallCheck.position, wallCheckSize, 0, Vector2.zero, 0, whatIsGround);
     }
 
     void AnimatorControllers() {
@@ -75,5 +86,6 @@ public class Player : MonoBehaviour
 
     private void OnDrawGizmos() {
         Gizmos.DrawLine(transform.position, new Vector2(transform.position.x, transform.position.y));
+        Gizmos.DrawWireCube(wallCheck.position, wallCheckSize);
     }
 }
