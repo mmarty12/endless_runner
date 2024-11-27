@@ -14,6 +14,8 @@ public class Player : MonoBehaviour
     [Header("Move Info")]
     [SerializeField] private float moveSpeed;
     [SerializeField] private float jumpForce;
+    [SerializeField] private float doubleJumpForce;
+    private bool canDoubleJump;
 
 
     [Header("Collision Info")]
@@ -27,7 +29,6 @@ public class Player : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
-
     }
 
     // Update is called once per frame
@@ -46,8 +47,18 @@ public class Player : MonoBehaviour
     void CheckInput() {
         if (Input.GetButtonDown("Horizontal")) playerUnlocked = true;
 
-        if(Input.GetKeyDown(KeyCode.Space) && isGrounded) {
+        if(Input.GetKeyDown(KeyCode.Space)) {
+            JumpButton();
+        }
+    }
+
+    void JumpButton() {
+        if (isGrounded) {
+            canDoubleJump = true;
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+        } else if (canDoubleJump) {
+            canDoubleJump = false;
+            rb.velocity = new Vector2(rb.velocity.x, doubleJumpForce);
         }
     }
 
@@ -59,6 +70,7 @@ public class Player : MonoBehaviour
         anim.SetFloat("xVelocity", rb.velocity.x);
         anim.SetFloat("yVelocity", rb.velocity.y);
         anim.SetBool("isGrounded", isGrounded);
+        anim.SetBool("canDoubleJump", canDoubleJump);
     }
 
     private void OnDrawGizmos() {
