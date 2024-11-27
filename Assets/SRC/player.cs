@@ -20,6 +20,7 @@ public class Player : MonoBehaviour
 
     [Header("Collision Info")]
     [SerializeField] private float groundCheckDistance;
+    [SerializeField] private float ceilingCheckDistance;
     [SerializeField] private LayerMask whatIsGround;
     [SerializeField] private Transform wallCheck;
     [SerializeField] private Vector2 wallCheckSize;
@@ -27,6 +28,15 @@ public class Player : MonoBehaviour
     private bool isGrounded;
     private bool playerUnlocked;
     private bool wallDetected;
+    private bool ceilingDetected;
+
+    [Header("Slide info")]
+    [SerializeField] private float slideSpeed;
+    [SerializeField] private float slideTime;
+    [SerializeField] private float slideCoolDown;
+    private float slideTimeCounter;
+    private bool isSliding;
+    private float slideCoolDownCounter;
 
 
     // Start is called before the first frame update
@@ -40,19 +50,27 @@ public class Player : MonoBehaviour
     void Update()
     {
         AnimatorControllers();
+        slideTimeCounter -= Time.deltaTime;
+        slideCoolDownCounter -= Time.deltaTime;
 
-        if (playerUnlocked && !wallDetected) {
-            Movement() 
+        if (playerUnlocked) {
+            Movement(); 
         }
 
         if (isGrounded) canDoubleJump = true;
         
         CheckCollisions();
         CheckInput();
+        CheckForSlide();
     }
 
     void Movement() {
-        rb.velocity = new Vector2(moveSpeed, rb.velocity.y);
+        if (wallDetected) return;
+        if(isSliding) {
+            rb.velocity = new Vector2(slideSpeed, rb.velocity.y);
+        } else {
+            rb.velocity = new Vector2(moveSpeed, rb.velocity.y);
+        }
     }
 
     void CheckInput() {
@@ -61,9 +79,14 @@ public class Player : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Space)) {
             JumpButton();
         }
+
+        if(Input.GetKeyDown(KeyCode.DownArrow)) {
+            slideButton();
+        }
     }
 
     void JumpButton() {
+        if (isSliding) return;
         if (isGrounded) {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
         } else if (canDoubleJump) {
@@ -72,9 +95,24 @@ public class Player : MonoBehaviour
         }
     }
 
+    void slideButton() {
+        if (rb.velocity.x != 0 && slideCoolDownCounter < 0) {
+            isSliding = true;
+            slideTimeCounter = slideTime;
+            slideCoolDownCounter = slideCoolDown;
+        }
+    }
+
     void CheckCollisions() {
         isGrounded = Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance, whatIsGround);
         wallDetected = Physics2D.BoxCast(wallCheck.position, wallCheckSize, 0, Vector2.zero, 0, whatIsGround);
+        ceilingDetected = Physics2D.Raycast(transform.position, Vector2.up, ceilingCheckDistance, whatIsGround);
+    }
+
+    void CheckForSlide() {
+        if(slideTimeCounter < 0 && !ceilingDetected) {
+            isSliding = false;
+        }
     }
 
     void AnimatorControllers() {
@@ -82,10 +120,12 @@ public class Player : MonoBehaviour
         anim.SetFloat("yVelocity", rb.velocity.y);
         anim.SetBool("isGrounded", isGrounded);
         anim.SetBool("canDoubleJump", canDoubleJump);
+        anim.SetBool("isSliding", isSliding);
     }
 
     private void OnDrawGizmos() {
-        Gizmos.DrawLine(transform.position, new Vector2(transform.position.x, transform.position.y));
+        Gizmos.DrawLine(transform.position, new Vector2(transform.position.x, transform.position.y - groundCheckDistance));
         Gizmos.DrawWireCube(wallCheck.position, wallCheckSize);
+        Gizmos.DrawLine(transform.position, new Vector2(transform.position.x, transform.position.y - ceilingCheckDistance));
     }
 }

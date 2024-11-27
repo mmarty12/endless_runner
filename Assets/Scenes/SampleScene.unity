@@ -17798,11 +17798,15 @@ MonoBehaviour:
   jumpForce: 18
   doubleJumpForce: 13
   groundCheckDistance: 2
+  ceilingCheckDistance: 1
   whatIsGround:
     serializedVersion: 2
     m_Bits: 8
   wallCheck: {fileID: 1040575359}
   wallCheckSize: {x: 0.5, y: 2.25}
+  slideSpeed: 20
+  slideTime: 0.4
+  slideCoolDown: 2
 --- !u!95 &1853076999
 Animator:
   serializedVersion: 5
