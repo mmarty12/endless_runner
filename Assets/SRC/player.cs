@@ -93,7 +93,7 @@ public class Player : MonoBehaviour
             SpeedReset();
             return;
         }
-        
+
         if(isSliding) {
             rb.velocity = new Vector2(slideSpeed, rb.velocity.y);
         } else {
@@ -146,6 +146,7 @@ public class Player : MonoBehaviour
     void CheckForLedge() {
         if (ledgeDetected && canGrab) {
             canGrab = false;
+            rb.gravityScale = 0;
             Vector2 ledgePos = GetComponentInChildren<ledgeDetection>().transform.position;
             climbBeginPos = ledgePos + offset1;
             climbOverPos = ledgePos + offset2;
@@ -159,6 +160,7 @@ public class Player : MonoBehaviour
 
     void LedgeClimbOver() {
         canClimb = false;
+        rb.gravityScale = 5;
         transform.position = climbOverPos;
         Invoke("AllowLedgeGrab", .1f);
     }
@@ -184,6 +186,8 @@ public class Player : MonoBehaviour
         milestoneIncrease = defaultMilestoneIncrease;
     }
 
+    void RollAnimFinished() => anim.SetBool("canRoll", false);
+
     void AnimatorControllers() {
         anim.SetFloat("xVelocity", rb.velocity.x);
         anim.SetFloat("yVelocity", rb.velocity.y);
@@ -191,6 +195,10 @@ public class Player : MonoBehaviour
         anim.SetBool("canDoubleJump", canDoubleJump);
         anim.SetBool("isSliding", isSliding);
         anim.SetBool("canClimb", canClimb);
+
+        if (rb.velocity.y < -20) {
+            anim.SetBool("canRoll", true);
+        }
     }
 
     private void OnDrawGizmos() {
