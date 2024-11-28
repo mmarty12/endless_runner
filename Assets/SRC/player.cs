@@ -48,12 +48,23 @@ public class Player : MonoBehaviour
     private bool canGrab = true;
     private bool canClimb;
 
+    [Header("Speed info")]
+    [SerializeField] private float maxSpeed;
+    [SerializeField] private float speedMultiplier;
+    [SerializeField] private float milestoneIncrease;
+    private float milestone;
+    private float defaultMilestoneIncrease;
+    private float defaultSpeed;
+
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        milestone = milestoneIncrease;
+        defaultSpeed = moveSpeed;
+        defaultMilestoneIncrease = milestoneIncrease;
     }
 
     // Update is called once per frame
@@ -68,6 +79,8 @@ public class Player : MonoBehaviour
         }
 
         if (isGrounded) canDoubleJump = true;
+
+        SpeedController();
         
         CheckCollisions();
         CheckInput();
@@ -76,7 +89,11 @@ public class Player : MonoBehaviour
     }
 
     void Movement() {
-        if (wallDetected) return;
+        if (wallDetected) {
+            SpeedReset();
+            return;
+        }
+        
         if(isSliding) {
             rb.velocity = new Vector2(slideSpeed, rb.velocity.y);
         } else {
@@ -147,6 +164,25 @@ public class Player : MonoBehaviour
     }
 
     private void AllowLedgeGrab() => canGrab = true;
+
+    void SpeedController() {
+        if (moveSpeed == maxSpeed) return;
+
+        if (transform.position.x > milestone) {
+            milestone += milestoneIncrease;
+            moveSpeed *= speedMultiplier;
+            milestoneIncrease *= speedMultiplier;
+
+            if (moveSpeed > maxSpeed) {
+                moveSpeed = maxSpeed;
+            }
+        }
+    }
+
+    void SpeedReset() {
+        moveSpeed = defaultSpeed;
+        milestoneIncrease = defaultMilestoneIncrease;
+    }
 
     void AnimatorControllers() {
         anim.SetFloat("xVelocity", rb.velocity.x);
