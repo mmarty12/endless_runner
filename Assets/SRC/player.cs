@@ -29,6 +29,8 @@ public class Player : MonoBehaviour
     private bool playerUnlocked;
     private bool wallDetected;
     private bool ceilingDetected;
+    [HideInInspector] public bool ledgeDetected;
+
 
     [Header("Slide info")]
     [SerializeField] private float slideSpeed;
@@ -37,6 +39,14 @@ public class Player : MonoBehaviour
     private float slideTimeCounter;
     private bool isSliding;
     private float slideCoolDownCounter;
+
+    [Header("Ledge info")]
+    [SerializeField] private Vector2 offset1;
+    [SerializeField] private Vector2 offset2;
+    private Vector2 climbBeginPos;
+    private Vector2 climbOverPos;
+    private bool canGrab = true;
+    private bool canClimb;
 
 
     // Start is called before the first frame update
@@ -62,6 +72,7 @@ public class Player : MonoBehaviour
         CheckCollisions();
         CheckInput();
         CheckForSlide();
+        CheckForLedge();
     }
 
     void Movement() {
@@ -115,12 +126,35 @@ public class Player : MonoBehaviour
         }
     }
 
+    void CheckForLedge() {
+        if (ledgeDetected && canGrab) {
+            canGrab = false;
+            Vector2 ledgePos = GetComponentInChildren<ledgeDetection>().transform.position;
+            climbBeginPos = ledgePos + offset1;
+            climbOverPos = ledgePos + offset2;
+            canClimb = true;
+        }
+
+        if (canClimb) {
+            transform.position = climbBeginPos;
+        }
+    }
+
+    void LedgeClimbOver() {
+        canClimb = false;
+        transform.position = climbOverPos;
+        Invoke("AllowLedgeGrab", .1f);
+    }
+
+    private void AllowLedgeGrab() => canGrab = true;
+
     void AnimatorControllers() {
         anim.SetFloat("xVelocity", rb.velocity.x);
         anim.SetFloat("yVelocity", rb.velocity.y);
         anim.SetBool("isGrounded", isGrounded);
         anim.SetBool("canDoubleJump", canDoubleJump);
         anim.SetBool("isSliding", isSliding);
+        anim.SetBool("canClimb", canClimb);
     }
 
     private void OnDrawGizmos() {
