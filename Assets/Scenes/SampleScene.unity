@@ -17937,6 +17937,7 @@ MonoBehaviour:
   maxSpeed: 20
   speedMultiplier: 1.15
   milestoneIncrease: 50
+  knockbackDir: {x: -12, y: 7}
 --- !u!95 &1853076999
 Animator:
   serializedVersion: 5

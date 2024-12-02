@@ -10,6 +10,7 @@ public class Player : MonoBehaviour
 {
     private Animator anim;
     private Rigidbody2D rb;
+    private SpriteRenderer sr;
 
     [Header("Move Info")]
     [SerializeField] private float moveSpeed;
@@ -56,11 +57,17 @@ public class Player : MonoBehaviour
     private float defaultMilestoneIncrease;
     private float defaultSpeed;
 
+    [Header("Knockback info")]
+    [SerializeField] private Vector2 knockbackDir;
+    private bool isKnocked;
+    private bool canBeKnocked = true;
+
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        sr = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
         milestone = milestoneIncrease;
         defaultSpeed = moveSpeed;
@@ -73,6 +80,12 @@ public class Player : MonoBehaviour
         AnimatorControllers();
         slideTimeCounter -= Time.deltaTime;
         slideCoolDownCounter -= Time.deltaTime;
+
+        if (Input.GetKeyDown(KeyCode.K)) {
+            Knockback();
+        }
+
+        if (isKnocked) return;
 
         if (playerUnlocked) {
             Movement(); 
@@ -188,6 +201,30 @@ public class Player : MonoBehaviour
 
     void RollAnimFinished() => anim.SetBool("canRoll", false);
 
+    private IEnumerator Invincibility() {
+        Color originalColor = sr.color;
+        Color darkenColor = new Color(originalColor.r, originalColor.g, originalColor.b, .5f);
+
+        canBeKnocked = false;
+        for (int i = 0; i < 5; i++) {
+            sr.color = darkenColor;
+            yield return new WaitForSeconds(.2f);
+
+            sr.color = originalColor;
+            yield return new WaitForSeconds(.2f);
+        }
+        canBeKnocked = true;
+    }
+
+    void Knockback() {
+        if (!canBeKnocked) return;
+        StartCoroutine(Invincibility());
+        isKnocked = true;
+        rb.velocity = knockbackDir;
+    }
+
+    void CancelKnockback() => isKnocked = false;
+
     void AnimatorControllers() {
         anim.SetFloat("xVelocity", rb.velocity.x);
         anim.SetFloat("yVelocity", rb.velocity.y);
@@ -195,6 +232,7 @@ public class Player : MonoBehaviour
         anim.SetBool("canDoubleJump", canDoubleJump);
         anim.SetBool("isSliding", isSliding);
         anim.SetBool("canClimb", canClimb);
+        anim.SetBool("isKnocked", isKnocked);
 
         if (rb.velocity.y < -20) {
             anim.SetBool("canRoll", true);
