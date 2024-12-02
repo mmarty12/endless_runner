@@ -65,7 +65,6 @@ public class Player : MonoBehaviour
     private bool canBeKnocked = true;
 
 
-    // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -76,7 +75,6 @@ public class Player : MonoBehaviour
         defaultMilestoneIncrease = milestoneIncrease;
     }
 
-    // Update is called once per frame
     void Update()
     {
         AnimatorControllers();
