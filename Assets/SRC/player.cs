@@ -12,6 +12,8 @@ public class Player : MonoBehaviour
     private Rigidbody2D rb;
     private SpriteRenderer sr;
 
+    private bool isDead;
+
     [Header("Move Info")]
     [SerializeField] private float moveSpeed;
     [SerializeField] private float jumpForce;
@@ -84,6 +86,12 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.K)) {
             Knockback();
         }
+
+        if (Input.GetKeyDown(KeyCode.L) && !isDead) {
+            StartCoroutine(Death());
+        }
+
+        if (isDead) return;
 
         if (isKnocked) return;
 
@@ -224,6 +232,15 @@ public class Player : MonoBehaviour
     }
 
     void CancelKnockback() => isKnocked = false;
+
+    IEnumerator Death() {
+        isDead = true;
+        canBeKnocked = false;
+        rb.velocity = knockbackDir;
+        anim.SetBool("isDead", true);
+        yield return new WaitForSeconds(.5f);
+        rb.velocity = new Vector2(0,0);
+    }
 
     void AnimatorControllers() {
         anim.SetFloat("xVelocity", rb.velocity.x);
