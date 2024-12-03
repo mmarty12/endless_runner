@@ -240,6 +240,11 @@ public class Player : MonoBehaviour
         rb.velocity = new Vector2(0,0);
     }
 
+    public void Damage() {
+        if (moveSpeed >= maxSpeed) Knockback();
+        else StartCoroutine(Death());
+    }
+
     void AnimatorControllers() {
         anim.SetFloat("xVelocity", rb.velocity.x);
         anim.SetFloat("yVelocity", rb.velocity.y);
