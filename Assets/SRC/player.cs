@@ -238,6 +238,9 @@ public class Player : MonoBehaviour
         anim.SetBool("isDead", true);
         yield return new WaitForSeconds(.5f);
         rb.velocity = new Vector2(0,0);
+
+        yield return new WaitForSeconds(1f);
+        GameManager.gameManager.RestartLevel();
     }
 
     public void Damage() {
