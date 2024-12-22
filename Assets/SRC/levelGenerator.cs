@@ -11,15 +11,29 @@ public class levelGenerator : MonoBehaviour
     [SerializeField] private float distanceToDelete;
     [SerializeField] private Transform player;
 
+    private bool useSpecificPart = true;
+    private Transform part;
+
     void Update()
     {
         DeletePlatform();
         GeneratePlatform();
     }
 
+    private Transform toggleLevelPart() {
+        if (useSpecificPart) {
+            part = levelPart[3];
+        } else {
+            part = levelPart[Random.Range(0, levelPart.Length)];
+        }
+        
+        useSpecificPart = !useSpecificPart;
+        return part;
+    }
+
     private void GeneratePlatform() {
             while (UnityEngine.Vector2.Distance(player.transform.position, nextPartPositon) < distanceToSpawn) {
-                Transform part = levelPart[Random.Range(0, levelPart.Length)];
+                Transform part = toggleLevelPart();
                 UnityEngine.Vector2 newPosition = new UnityEngine.Vector2(nextPartPositon.x - part.Find("startPoint").position.x, 0);
                 Transform newPart = Instantiate(part, newPosition, transform.rotation, transform);
 

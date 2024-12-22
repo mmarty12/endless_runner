@@ -10,8 +10,14 @@ public class coinGenerator : MonoBehaviour
     [SerializeField] private int chance;
     [SerializeField] private GameObject coinPrefab;
 
+    [SerializeField] private SpriteRenderer[] coinImg;
+
     void Start()
     {
+        for(int i = 0; i < coinImg.Length; i++) {
+            coinImg[i].sprite = null;
+        }
+
         int additionalOffset = amount / 2;
         for (int i = 0; i < amount; i++) {
             bool canSpawn = chance > Random.Range(0, 100);

@@ -8,8 +8,10 @@ public class movingTrap : trap
     [SerializeField] private float rotationSpeed;
     [SerializeField] private Transform[] movePoint;
     private int i;
-
-    private void Start() => transform.position = movePoint[0].position;
+    protected override void Start() {
+        base.Start();
+        transform.position = movePoint[0].position;
+    }
     private void Update() {
         transform.position = Vector3.MoveTowards(transform.position, movePoint[i].position, speed * Time.deltaTime);
 
