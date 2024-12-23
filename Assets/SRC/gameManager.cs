@@ -6,11 +6,23 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager gameManager;
+    public Player player;
+
+    [Header("Score info")]
     public int coins;
+    public float dist;
 
     private void Awake() {
         gameManager = this;
     }
 
     public void RestartLevel() => SceneManager.LoadScene(0);
+
+    public void UnlockPlayer() => player.playerUnlocked = true;
+
+    private void Update() {
+        if (player.transform.position.x > dist) {
+            dist = player.transform.position.x;
+        }
+    }
 }

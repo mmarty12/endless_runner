@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
     private SpriteRenderer sr;
 
     private bool isDead;
+    [HideInInspector] public bool extraLife;
 
     [Header("Move Info")]
     [SerializeField] private float moveSpeed;
@@ -29,7 +30,7 @@ public class Player : MonoBehaviour
     [SerializeField] private Vector2 wallCheckSize;
 
     private bool isGrounded;
-    private bool playerUnlocked;
+    [HideInInspector] public bool playerUnlocked;
     private bool wallDetected;
     private bool ceilingDetected;
     [HideInInspector] public bool ledgeDetected;
@@ -81,6 +82,8 @@ public class Player : MonoBehaviour
         slideTimeCounter -= Time.deltaTime;
         slideCoolDownCounter -= Time.deltaTime;
 
+        extraLife = moveSpeed >= maxSpeed;
+
         if (Input.GetKeyDown(KeyCode.K)) {
             Knockback();
         }
@@ -121,7 +124,7 @@ public class Player : MonoBehaviour
     }
 
     void CheckInput() {
-        if (Input.GetButtonDown("Horizontal")) playerUnlocked = true;
+        // if (Input.GetButtonDown("Horizontal")) playerUnlocked = true;
 
         if(Input.GetKeyDown(KeyCode.Space)) {
             JumpButton();
@@ -244,7 +247,7 @@ public class Player : MonoBehaviour
     }
 
     public void Damage() {
-        if (moveSpeed >= maxSpeed) Knockback();
+        if (extraLife) Knockback();
         else StartCoroutine(Death());
     }
 
