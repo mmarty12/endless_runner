@@ -12,7 +12,7 @@ public class AudioManager : MonoBehaviour
     private void Awake() => audioManager = this;
 
     private void Update() {
-        if (!bgm[bgmIdx].isPlaying()) {
+        if (!bgm[bgmIdx].isPlaying) {
             PlayRandomBGM();
         }
     }
@@ -34,10 +34,7 @@ public class AudioManager : MonoBehaviour
     }
 
     public void PlayBGM(int idx) {
-        for (int i = 0; i < bgm.Length; i++) {
-            bgm[idx].Stop();
-        }
-
+        StopBGM();
         bgm[idx].Play();
     }
 

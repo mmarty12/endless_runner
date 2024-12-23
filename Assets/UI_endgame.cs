@@ -15,10 +15,4 @@ public class UI_endgame : MonoBehaviour
         coins.text = "Coins: " + GameManager.gameManager.coins.ToString("#,#");
         Time.timeScale = 0;
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
