@@ -242,8 +242,8 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(.5f);
         rb.velocity = new Vector2(0,0);
 
-        yield return new WaitForSeconds(1f);
-        GameManager.gameManager.RestartLevel();
+        Time.timeScale = .6f;
+        GameManager.gameManager.GameEnded();
     }
 
     public void Damage() {

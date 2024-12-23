@@ -7,12 +7,12 @@ public class UI : MonoBehaviour
 {
     private bool gamePaused;
     [SerializeField] private GameObject mainMenu;
+    [SerializeField] private GameObject endgameMenu;
     [SerializeField] private TextMeshProUGUI lastScoreText;
     [SerializeField] private TextMeshProUGUI bestScoreText;
     [SerializeField] private TextMeshProUGUI coinsText;
 
     private void Start() {
-        Time.timeScale = 1;
         SwitchMenu(mainMenu);
         lastScoreText.text = "Last Score: " + PlayerPrefs.GetFloat("LastScore", 0).ToString("#,#");
         bestScoreText.text = "Best Score: " + PlayerPrefs.GetFloat("BestScore", 0).ToString("#,#");
@@ -39,4 +39,8 @@ public class UI : MonoBehaviour
     }
 
     public void RestartGameBtn() => GameManager.gameManager.RestartLevel();
+    
+    public void OpenEndGameUI() {
+        SwitchMenu(endgameMenu);
+    }
 }

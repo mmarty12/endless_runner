@@ -6,18 +6,20 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager gameManager;
+    public UI ui;
     public Player player;
 
     [Header("Score info")]
     public int coins;
     public float dist;
+    public float score;
 
     private void Awake() {
         gameManager = this;
+        Time.timeScale = 1;
     }
 
     public void RestartLevel() {
-        SaveInfo();
         SceneManager.LoadScene(0);
     }
     public void UnlockPlayer() => player.playerUnlocked = true;
@@ -32,11 +34,16 @@ public class GameManager : MonoBehaviour
         int savedCoins = PlayerPrefs.GetInt("TotalCoins", 0);      
         PlayerPrefs.SetInt("TotalCoins", savedCoins + coins);
 
-        float score = dist * coins;
+        score = dist * coins;
         PlayerPrefs.SetFloat("LastScore", score);
 
         if (PlayerPrefs.GetFloat("BestScore") < score) {
             PlayerPrefs.SetFloat("BestScore", score);
         }
+    }
+
+    public void GameEnded() {
+        SaveInfo();
+        ui.OpenEndGameUI();
     }
 }
