@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -139,9 +138,11 @@ public class Player : MonoBehaviour
         if (isSliding) return;
         if (isGrounded) {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            AudioManager.audioManager.PlaySFX(Random.Range(1, 2));
         } else if (canDoubleJump) {
             canDoubleJump = false;
             rb.velocity = new Vector2(rb.velocity.x, doubleJumpForce);
+            AudioManager.audioManager.PlaySFX(Random.Range(1, 2));
         }
     }
 
@@ -235,6 +236,7 @@ public class Player : MonoBehaviour
     void CancelKnockback() => isKnocked = false;
 
     IEnumerator Death() {
+        AudioManager.audioManager.PlaySFX(3);
         isDead = true;
         canBeKnocked = false;
         rb.velocity = knockbackDir;
