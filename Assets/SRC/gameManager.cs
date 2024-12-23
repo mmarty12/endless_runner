@@ -16,13 +16,27 @@ public class GameManager : MonoBehaviour
         gameManager = this;
     }
 
-    public void RestartLevel() => SceneManager.LoadScene(0);
-
+    public void RestartLevel() {
+        SaveInfo();
+        SceneManager.LoadScene(0);
+    }
     public void UnlockPlayer() => player.playerUnlocked = true;
 
     private void Update() {
         if (player.transform.position.x > dist) {
             dist = player.transform.position.x;
+        }
+    }
+
+    public void SaveInfo() {
+        int savedCoins = PlayerPrefs.GetInt("TotalCoins", 0);      
+        PlayerPrefs.SetInt("TotalCoins", savedCoins + coins);
+
+        float score = dist * coins;
+        PlayerPrefs.SetFloat("LastScore", score);
+
+        if (PlayerPrefs.GetFloat("BestScore") < score) {
+            PlayerPrefs.SetFloat("BestScore", score);
         }
     }
 }

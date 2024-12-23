@@ -1,15 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class UI : MonoBehaviour
 {
     private bool gamePaused;
     [SerializeField] private GameObject mainMenu;
+    [SerializeField] private TextMeshProUGUI lastScoreText;
+    [SerializeField] private TextMeshProUGUI bestScoreText;
+    [SerializeField] private TextMeshProUGUI coinsText;
 
     private void Start() {
         Time.timeScale = 1;
         SwitchMenu(mainMenu);
+        lastScoreText.text = "Last Score: " + PlayerPrefs.GetFloat("LastScore", 0).ToString("#,#");
+        bestScoreText.text = "Best Score: " + PlayerPrefs.GetFloat("BestScore", 0).ToString("#,#");
     }
     public void SwitchMenu(GameObject uiMenu) {
         for(int i = 0; i < transform.childCount; i++) {
@@ -17,6 +23,7 @@ public class UI : MonoBehaviour
         }
         
         uiMenu.SetActive(true);
+        coinsText.text = PlayerPrefs.GetInt("TotalCoins", 0).ToString("#,#");
     }
 
     public void StartGameBtn() => GameManager.gameManager.UnlockPlayer();
