@@ -88,21 +88,13 @@ public class Player : MonoBehaviour
 
         extraLife = moveSpeed >= surviveSpeed;
 
-        if (Input.GetKeyDown(KeyCode.K)) {
-            Knockback();
-        }
+        if (Input.GetKeyDown(KeyCode.K)) Knockback();
 
-        if (Input.GetKeyDown(KeyCode.L) && !isDead) {
-            StartCoroutine(Death());
-        }
+        if (Input.GetKeyDown(KeyCode.L) && !isDead) StartCoroutine(Death());
 
-        if (isDead) return;
+        if (isDead || isKnocked) return;
 
-        if (isKnocked) return;
-
-        if (playerUnlocked) {
-            Movement(); 
-        }
+        if (playerUnlocked) Movement(); 
 
         if (isGrounded) canDoubleJump = true;
 
@@ -120,7 +112,7 @@ public class Player : MonoBehaviour
             return;
         }
 
-        if(isSliding) {
+        if(isSliding){
             rb.velocity = new Vector2(slideSpeed, rb.velocity.y);
         } else {
             rb.velocity = new Vector2(moveSpeed, rb.velocity.y);
@@ -130,13 +122,9 @@ public class Player : MonoBehaviour
     void CheckInput() {
         // if (Input.GetButtonDown("Horizontal")) playerUnlocked = true;
 
-        if(Input.GetKeyDown(KeyCode.Space)) {
-            JumpButton();
-        }
+        if(Input.GetKeyDown(KeyCode.Space)) JumpButton();
 
-        if(Input.GetKeyDown(KeyCode.DownArrow)) {
-            slideButton();
-        }
+        if(Input.GetKeyDown(KeyCode.DownArrow)) slideButton();
     }
 
     void JumpButton() {
@@ -145,15 +133,17 @@ public class Player : MonoBehaviour
         RollAnimFinished();
 
         if (isGrounded) {
-            dustFX.Play();
-            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-            AudioManager.audioManager.PlaySFX(Random.Range(1, 2));
+            Jump(jumpForce);
         } else if (canDoubleJump) {
-            dustFX.Play();
             canDoubleJump = false;
-            rb.velocity = new Vector2(rb.velocity.x, doubleJumpForce);
-            AudioManager.audioManager.PlaySFX(Random.Range(1, 2));
+            Jump(doubleJumpForce);
         }
+    }
+
+    private void Jump(float force) {
+        dustFX.Play();
+        rb.velocity = new Vector2(rb.velocity.x, force);
+        AudioManager.audioManager.PlaySFX(Random.Range(1, 2));
     }
 
     void slideButton() {
@@ -172,9 +162,7 @@ public class Player : MonoBehaviour
     }
 
     void CheckForSlide() {
-        if(slideTimeCounter < 0 && !ceilingDetected) {
-            isSliding = false;
-        }
+        if(slideTimeCounter < 0 && !ceilingDetected) isSliding = false;
     }
 
     void CheckForLedge() {
@@ -187,9 +175,7 @@ public class Player : MonoBehaviour
             canClimb = true;
         }
 
-        if (canClimb) {
-            transform.position = climbBeginPos;
-        }
+        if (canClimb) transform.position = climbBeginPos;
     }
 
     void LedgeClimbOver() {
@@ -209,9 +195,7 @@ public class Player : MonoBehaviour
             moveSpeed *= speedMultiplier;
             milestoneIncrease *= speedMultiplier;
 
-            if (moveSpeed > maxSpeed) {
-                moveSpeed = maxSpeed;
-            }
+            if (moveSpeed > maxSpeed) moveSpeed = maxSpeed;
         }
     }
 
@@ -229,6 +213,7 @@ public class Player : MonoBehaviour
         Color darkenColor = new Color(originalColor.r, originalColor.g, originalColor.b, .5f);
 
         canBeKnocked = false;
+        
         for (int i = 0; i < 5; i++) {
             sr.color = darkenColor;
             yield return new WaitForSeconds(.2f);
@@ -236,6 +221,7 @@ public class Player : MonoBehaviour
             sr.color = originalColor;
             yield return new WaitForSeconds(.2f);
         }
+
         canBeKnocked = true;
     }
 
@@ -275,14 +261,12 @@ public class Player : MonoBehaviour
         anim.SetBool("canClimb", canClimb);
         anim.SetBool("isKnocked", isKnocked);
 
-        if (rb.velocity.y < -20) {
-            anim.SetBool("canRoll", true);
-        }
+        if (rb.velocity.y < -20) anim.SetBool("canRoll", true);
     }
 
     private void OnDrawGizmos() {
         Gizmos.DrawLine(transform.position, new Vector2(transform.position.x, transform.position.y - groundCheckDistance));
         Gizmos.DrawWireCube(wallCheck.position, wallCheckSize);
-        Gizmos.DrawLine(transform.position, new Vector2(transform.position.x, transform.position.y - ceilingCheckDistance));
+        Gizmos.DrawLine(transform.position, new Vector2(transform.position.x, transform.position.y + ceilingCheckDistance));
     }
 }

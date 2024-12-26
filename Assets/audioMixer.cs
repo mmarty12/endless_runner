@@ -17,12 +17,7 @@ public class audioMixer : MonoBehaviour
         slider.value = PlayerPrefs.GetFloat(audioParameter, slider.value);
     }
 
-    private void OnDisable() {
-        PlayerPrefs.SetFloat(audioParameter, slider.value);
-    }
+    private void OnDisable() => PlayerPrefs.SetFloat(audioParameter, slider.value);
 
-    private void SliderValue(float value)
-    {
-        am.SetFloat(audioParameter, Mathf.Log10(value) * multiplier);
-    }
+    private void SliderValue(float value) => am.SetFloat(audioParameter, Mathf.Log10(value) * multiplier);
 }

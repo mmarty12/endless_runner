@@ -25,9 +25,7 @@ public class GameManager : MonoBehaviour
     public void UnlockPlayer() => player.playerUnlocked = true;
 
     private void Update() {
-        if (player.transform.position.x > dist) {
-            dist = player.transform.position.x;
-        }
+        if (player.transform.position.x > dist) dist = player.transform.position.x;
     }
 
     public void SaveInfo() {
@@ -37,9 +35,7 @@ public class GameManager : MonoBehaviour
         score = dist * coins;
         PlayerPrefs.SetFloat("LastScore", score);
 
-        if (PlayerPrefs.GetFloat("BestScore") < score) {
-            PlayerPrefs.SetFloat("BestScore", score);
-        }
+        if (PlayerPrefs.GetFloat("BestScore") < score) PlayerPrefs.SetFloat("BestScore", score);
     }
 
     public void GameEnded() {

@@ -13,14 +13,12 @@ public class UI_ingame : MonoBehaviour
 
     private Player player;
 
-    void Start()
-    {
+    void Start() {
         player = GameManager.gameManager.player;
         InvokeRepeating("UpdateInfo", 0, .15f);
     }
 
-    private void UpdateInfo()
-    {
+    private void UpdateInfo() {
         dist.text = GameManager.gameManager.dist.ToString("#,#") + " m";
         coins.text = GameManager.gameManager.coins.ToString("#,#");
 

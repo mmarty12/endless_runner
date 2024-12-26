@@ -17,13 +17,14 @@ public class movingTrap : trap
 
         if (Vector2.Distance(transform.position, movePoint[i].position) < .25f) {
             i++;
-
             if (i >= movePoint.Length) i = 0;
         }
 
         if (transform.position.x > movePoint[i].position.x) {
             transform.Rotate(new Vector3(0, 0, rotationSpeed * Time.deltaTime));
-        } else transform.Rotate(new Vector3(0, 0, -rotationSpeed * Time.deltaTime));
+        } else {
+            transform.Rotate(new Vector3(0, 0, -rotationSpeed * Time.deltaTime));
+        }
     }
 
     protected override void OnTriggerEnter2D(Collider2D collision) {
