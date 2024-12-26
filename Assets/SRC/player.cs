@@ -16,6 +16,7 @@ public class Player : MonoBehaviour
 
     [Header("Move Info")]
     [SerializeField] private float moveSpeed;
+    [SerializeField] private float surviveSpeed = 18;
     [SerializeField] private float jumpForce;
     [SerializeField] private float doubleJumpForce;
     private bool canDoubleJump;
@@ -61,6 +62,10 @@ public class Player : MonoBehaviour
 
     [Header("Knockback info")]
     [SerializeField] private Vector2 knockbackDir;
+
+    [Header("VFX")]
+    [SerializeField] private ParticleSystem dustFX;
+
     private bool isKnocked;
     private bool canBeKnocked = true;
 
@@ -81,7 +86,7 @@ public class Player : MonoBehaviour
         slideTimeCounter -= Time.deltaTime;
         slideCoolDownCounter -= Time.deltaTime;
 
-        extraLife = moveSpeed >= maxSpeed;
+        extraLife = moveSpeed >= surviveSpeed;
 
         if (Input.GetKeyDown(KeyCode.K)) {
             Knockback();
@@ -136,10 +141,15 @@ public class Player : MonoBehaviour
 
     void JumpButton() {
         if (isSliding) return;
+
+        RollAnimFinished();
+
         if (isGrounded) {
+            dustFX.Play();
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             AudioManager.audioManager.PlaySFX(Random.Range(1, 2));
         } else if (canDoubleJump) {
+            dustFX.Play();
             canDoubleJump = false;
             rb.velocity = new Vector2(rb.velocity.x, doubleJumpForce);
             AudioManager.audioManager.PlaySFX(Random.Range(1, 2));
@@ -148,6 +158,7 @@ public class Player : MonoBehaviour
 
     void slideButton() {
         if (rb.velocity.x != 0 && slideCoolDownCounter < 0) {
+            dustFX.Play();
             isSliding = true;
             slideTimeCounter = slideTime;
             slideCoolDownCounter = slideCoolDown;
@@ -205,6 +216,8 @@ public class Player : MonoBehaviour
     }
 
     void SpeedReset() {
+        if(isSliding) return;
+
         moveSpeed = defaultSpeed;
         milestoneIncrease = defaultMilestoneIncrease;
     }
