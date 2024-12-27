@@ -82,6 +82,7 @@ public class Player : MonoBehaviour
 
     void Update()
     {
+        CheckCollisions();
         AnimatorControllers();
         slideTimeCounter -= Time.deltaTime;
         slideCoolDownCounter -= Time.deltaTime;
@@ -97,13 +98,11 @@ public class Player : MonoBehaviour
         if (playerUnlocked) Movement(); 
 
         if (isGrounded) {
-            //Time.timeScale = 1;
+            Time.timeScale = 1;
             canDoubleJump = true;
         }
 
         SpeedController();
-        
-        CheckCollisions();
         CheckInput();
         CheckForSlide();
         CheckForLedge();
@@ -246,7 +245,7 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(.5f);
         rb.velocity = new Vector2(0,0);
 
-        Time.timeScale = .6f;
+        Time.timeScale = .1f;
         GameManager.gameManager.GameEnded();
     }
 
