@@ -10,6 +10,7 @@ public class UI_ingame : MonoBehaviour
     [SerializeField] private TextMeshProUGUI coins;
     [SerializeField] private Image heartEmpty;    
     [SerializeField] private Image heartFull;
+    [SerializeField] private Image slideIcon;
 
     private Player player;
 
@@ -19,6 +20,7 @@ public class UI_ingame : MonoBehaviour
     }
 
     private void UpdateInfo() {
+        slideIcon.enabled = player.slideCoolDownCounter < 0;
         dist.text = GameManager.gameManager.dist.ToString("#,#") + " m";
         coins.text = GameManager.gameManager.coins.ToString("#,#");
 

@@ -36,8 +36,8 @@ public class UI_shop : MonoBehaviour
     }
 
     public void Purchase(Color color, int price) {
-        AudioManager.instance.PlaySFX(4);
-        
+        AudioManager.audioManager.PlaySFX(4);
+
         if (EnoughMoney(price)) {
             GameManager.gameManager.player.GetComponent<SpriteRenderer>().color = color;
             playerDisplay.color = color;

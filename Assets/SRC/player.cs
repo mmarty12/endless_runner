@@ -42,7 +42,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float slideCoolDown;
     private float slideTimeCounter;
     private bool isSliding;
-    private float slideCoolDownCounter;
+    [HideInInspector] public float slideCoolDownCounter;
 
     [Header("Ledge info")]
     [SerializeField] private Vector2 offset1;
@@ -127,7 +127,7 @@ public class Player : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.DownArrow)) slideButton();
     }
 
-    void JumpButton() {
+    public void JumpButton() {
         if (isSliding) return;
 
         RollAnimFinished();
@@ -146,7 +146,7 @@ public class Player : MonoBehaviour
         AudioManager.audioManager.PlaySFX(Random.Range(1, 2));
     }
 
-    void slideButton() {
+    public void slideButton() {
         if (rb.velocity.x != 0 && slideCoolDownCounter < 0) {
             dustFX.Play();
             isSliding = true;
