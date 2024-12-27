@@ -96,7 +96,10 @@ public class Player : MonoBehaviour
 
         if (playerUnlocked) Movement(); 
 
-        if (isGrounded) canDoubleJump = true;
+        if (isGrounded) {
+            //Time.timeScale = 1;
+            canDoubleJump = true;
+        }
 
         SpeedController();
         
