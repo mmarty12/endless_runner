@@ -17,6 +17,6 @@ All in all, there are 11 different variants of levels that are generated in rand
 
 On dying you'll see a popping window with your achievements. You can also spend the coins in the shop in order to buy the skin for the next run.
 
-The game was developed using Unity engine and C# scripts. You can test it yourself following the [link](https://mmart004.itch.io/endless-runner) :)
+The game was developed using Unity engine and C# scripts. You can test it yourself by following the [link](https://mmart004.itch.io/endless-runner) :)
 
 ---
