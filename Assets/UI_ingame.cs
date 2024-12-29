@@ -24,7 +24,12 @@ public class UI_ingame : MonoBehaviour
         dist.text = GameManager.gameManager.dist.ToString("#,#") + " m";
         coins.text = GameManager.gameManager.coins.ToString("#,#");
 
-        heartEmpty.enabled = !player.extraLife;
-        heartFull.enabled = player.extraLife;
+        if (player.extraLife) {
+            heartFull.enabled = true;
+            heartEmpty.enabled = false;
+        } else {
+            heartFull.enabled = false;
+            heartEmpty.enabled = true;
+        }
     }
 }

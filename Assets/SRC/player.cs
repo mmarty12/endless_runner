@@ -68,6 +68,9 @@ public class Player : MonoBehaviour
 
     private bool isKnocked;
     private bool canBeKnocked = true;
+    private float extraLifeCooldown = 7f;
+    private float extraLifeCooldownTimer = 0f;
+
 
 
     void Start()
@@ -87,11 +90,9 @@ public class Player : MonoBehaviour
         slideTimeCounter -= Time.deltaTime;
         slideCoolDownCounter -= Time.deltaTime;
 
-        extraLife = moveSpeed >= surviveSpeed;
+        if (extraLifeCooldownTimer > 0) extraLifeCooldownTimer -= Time.deltaTime;
 
-        if (Input.GetKeyDown(KeyCode.K)) Knockback();
-
-        if (Input.GetKeyDown(KeyCode.L) && !isDead) StartCoroutine(Death());
+        else if (!isKnocked) extraLife = moveSpeed >= surviveSpeed;
 
         if (isDead || isKnocked) return;
 
@@ -232,6 +233,10 @@ public class Player : MonoBehaviour
         StartCoroutine(Invincibility());
         isKnocked = true;
         rb.velocity = knockbackDir;
+        extraLife = false;
+        extraLifeCooldownTimer = extraLifeCooldown;
+
+        Invoke(nameof(CancelKnockback), 0.5f);
     }
 
     void CancelKnockback() => isKnocked = false;
